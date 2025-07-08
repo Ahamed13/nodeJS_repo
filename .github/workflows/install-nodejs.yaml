@@ -1,14 +1,24 @@
-name: "install-nodejs"
-on: push
+name: Install Node JS
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
 jobs:
-    Install-nodeJS:
-        runs-on: "ubuntu-latest"
-        steps:
-            - name: "Get Code from Repo"
-              uses: actions/checkout@v3
-            - name: "installing_nodeJS18"
-              uses: actions/setup-node@v4
-              with:
-                node-version: 18
+  install_nodeJS:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "downloading the repo to the machine"
+        uses: actions/checkout@v3
+      - name: "Installing the nodeJS"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: "print_context"
+        run: |
+          echo "This workflow was trigger by ${{ github.event_name }}"
+          echo "Branch ${{ github.ref }}"
 
-        
