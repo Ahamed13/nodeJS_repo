@@ -17,7 +17,7 @@ jobs:
         steps:
             - name: Checking_docker_installation
               run: |
-                if ! command -v deocker &> /dev/null; then
+                if ! command -v docker &> /dev/null; then
                     echo "The docker is not installed, cancelling"
                     exit 1
                 fi
