@@ -32,7 +32,7 @@ jobs:
             - name: Build_Push_Docker_image
               id: docker_tag
               run: | 
-                image_tag=${ GITHUB_SHA::4 }
+                image_tag=${GITHUB_SHA::4}
                 image=$registry:$image_tag
 
                 docker build -t $image .
