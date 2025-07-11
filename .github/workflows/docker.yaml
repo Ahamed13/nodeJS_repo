@@ -1,0 +1,49 @@
+name: Docker CI/CD Pipeline
+
+on:
+    push:
+        branches:
+            - docker/feature
+
+env:
+    image_name: flask-py
+    registry: ahameddocker/flask-py
+
+jobs:
+
+    build-docker:
+        runs-on: "Ubuntu-latest"
+
+        steps:
+            - name: Checking_docker_installation
+              run: |
+                if ! command -v deocker &> /dev/null; then
+                    echo "The docker is not installed, cancelling"
+                    exit 1
+                fi
+                echo "The docker is installed"
+            
+            - name: checkout_code
+              uses: actions/checkout@v4
+
+            - name: login_to_dockerhub
+              run: echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} -password-stdin
+            
+            - name: Build_Push_Docker_image
+              id: docker_tag
+              run: | 
+                image_tag=${ GITHUB_SHA::7 }
+                image=$registry:$image_tag
+
+                docker build -t $image .
+                docker push $image
+
+                echo "tag=$image_tag" >> $GITHUB_OUTPUT
+                echo  $image_tag > image_tag.txt
+
+            - name: upload_image_to_dockerhub
+              uses: actions/upload-artifact@v4
+              with:
+                name: image-tag
+                path: image_tag.txt
+
